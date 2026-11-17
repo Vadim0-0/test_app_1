@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'screens/counter_screen.dart';
 import 'screens/converter_screen.dart';
@@ -10,10 +10,14 @@ import 'screens/weather_screen.dart';
 import 'screens/gallery_screen.dart';
 
 // main() — точка входа. runApp запускает корневой виджет.
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: '.env');
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await dotenv.load(fileName: '.env');
 
+//   runApp(const MyApp());
+// }
+
+void main() {
   runApp(const MyApp());
 }
 
