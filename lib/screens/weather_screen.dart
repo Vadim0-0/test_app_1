@@ -253,6 +253,38 @@ class _WeatherScreenState extends State<WeatherScreen> {
     }
   }
 
+  // Обновление
+  Future<void> _refreshWeather() async {
+    // Обновление городов, которые отображаются
+    final cities = List<WeatherCity>.of(
+      _isSearchMode ? _searchResults : _favorites,
+    );
+
+    if (cities.isEmpty) return;
+
+    final newRequests = <String, Future<WeatherData>>{
+      for (final city in cities) _cityKey(city): _service.getWeather(city),
+    };
+
+    // Карточки получают новые Future и показывают загрузку.
+    setState(() {
+      _requests.addAll(newRequests);
+    });
+
+    try {
+      // Индикатор обновления работает, пока запросы не завершатся.
+      await Future.wait(newRequests.values);
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Не удалось обновить погоду для некоторых городов'),
+        ),
+      );
+    }
+  }
+
   // Обработка изменения ввода
   void _onSearchChanged(String value) {
     // Отображение нового запроса
@@ -333,23 +365,27 @@ class _WeatherScreenState extends State<WeatherScreen> {
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      itemCount: cities.length,
-      itemBuilder: (context, index) {
-        final city = cities[index];
+    return RefreshIndicator(
+      onRefresh: _refreshWeather,
+      child: ListView.builder(
+        // Позволяет потянуть список даже с одной карточкой.
+        physics: const AlwaysScrollableScrollPhysics(),
 
-        return CityWeatherCard(
-          key: ValueKey(_cityKey(city)),
-          city: city,
-          request: _weatherFor(city),
-          onRetry: () => _retry(city),
-          onLongPress: () => _showCityActions(city),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        itemCount: cities.length,
+        itemBuilder: (context, index) {
+          final city = cities[index];
 
-          // Рамка только у избранных в результатах поиска.
-          highlightFavorite: _isSearchMode && _isFavorite(city),
-        );
-      },
+          return CityWeatherCard(
+            key: ValueKey(_cityKey(city)),
+            city: city,
+            request: _weatherFor(city),
+            onRetry: () => _retry(city),
+            onLongPress: () => _showCityActions(city),
+            highlightFavorite: _isSearchMode && _isFavorite(city),
+          );
+        },
+      ),
     );
   }
 
@@ -422,7 +458,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
           if (_isSavingFavorites) const LinearProgressIndicator(),
           Expanded(child: _buildContent()),
           const Padding(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.only(
+              top: 8,
+              bottom: 20,
+              left: 16,
+              right: 16,
+            ),
             child: Text(
               'Данные о погоде: Open-Meteo.com (CC BY 4.0)',
               textAlign: TextAlign.center,
