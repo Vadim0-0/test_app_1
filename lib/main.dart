@@ -6,8 +6,8 @@ import 'screens/converter_screen.dart';
 import 'screens/todo_screen.dart';
 import 'screens/quotes_screen.dart';
 import 'screens/weather_screen.dart';
-
 import 'screens/gallery_screen.dart';
+import 'screens/notes_screen.dart';
 
 // main() — точка входа. runApp запускает корневой виджет.
 // Future<void> main() async {
@@ -87,6 +87,12 @@ class HomeScreen extends StatelessWidget {
         'Проноз погоды',
         Icons.device_thermostat,
         (_) => const WeatherScreen(),
+      ),
+      DemoItem(
+        'Заметки',
+        'Категории и личные записи',
+        Icons.note_alt_outlined,
+        (_) => const NotesScreen(),
       ),
     ];
 
