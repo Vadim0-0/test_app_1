@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:test_app_1/main.dart';
+import 'package:test_app_1/app/app.dart';
 
 void main() {
   testWidgets('Главное меню содержит пункт Погода', (tester) async {
