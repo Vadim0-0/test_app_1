@@ -46,7 +46,7 @@ class WeatherService {
   }
 
   // Поиск города по названию.
-  Future<WeatherCity> findCity(String name) async {
+  Future<List<WeatherCity>> findCities(String name) async {
     final query = name.trim();
 
     if (query.length < 2) {
@@ -55,27 +55,26 @@ class WeatherService {
 
     final uri = Uri.https('geocoding-api.open-meteo.com', '/v1/search', {
       'name': query,
-      'count': '1',
+      'count': '10',
       'language': 'ru',
       'format': 'json',
     });
 
     final json = await _getJson(uri);
-    final results = json['results'] as List<dynamic>?;
 
-    if (results == null || results.isEmpty) {
-      throw Exception('Город «$query» не найден');
-    }
+    final results = json['results'] as List<dynamic>? ?? [];
 
-    final city = results.first as Map<String, dynamic>;
+    return results.map((item) {
+      final city = item as Map<String, dynamic>;
 
-    return WeatherCity(
-      name: city['name'] as String,
-      country:
-          city['country'] as String? ?? city['country_code'] as String? ?? '',
-      latitude: (city['latitude'] as num).toDouble(),
-      longitude: (city['longitude'] as num).toDouble(),
-    );
+      return WeatherCity(
+        name: city['name'] as String,
+        country:
+            city['country'] as String? ?? city['country_code'] as String? ?? '',
+        latitude: (city['latitude'] as num).toDouble(),
+        longitude: (city['longitude'] as num).toDouble(),
+      );
+    }).toList();
   }
 
   // Общая отправка запроса и проверка ответа.

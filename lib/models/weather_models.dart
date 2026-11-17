@@ -19,6 +19,15 @@ class WeatherCity {
     latitude: (json['latitude'] as num).toDouble(),
     longitude: (json['longitude'] as num).toDouble(),
   );
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'country': country,
+      'latitude': latitude,
+      'longitude': longitude,
+    };
+  }
 }
 
 // Текушая погода
