@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Москва",
+    "country": "RU",
+    "latitude": 55.7558,
+    "longitude": 37.6173
+  },
+  {
+    "name": "Санкт-Петург",
+    "country": "RU",
+    "latitude": 59.9343,
+    "longitude": 30.3351
+  },
+  {
+    "name": "Казань",
+    "country": "RU",
+    "latitude": 55.7963,
+    "longitude": 49.1088
+  }
+]
